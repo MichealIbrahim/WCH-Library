@@ -157,7 +157,7 @@ void My_SPI1_Send_Frame(uint8_t* data , uint8_t len)
 uint8_t My_SPI1_Transmit(uint8_t data ) {
 
 
-
+	received_data = SPI1->DATAR; //clearing RXNE 
     // Wait until the transmit buffer is empty
     while (!(SPI1->STATR  |= SPI_flag_TXE));
     // Set NSS low to select the slave
