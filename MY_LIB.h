@@ -45,7 +45,7 @@ void My_GPIO_init (GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin , uint8_t mode ,uint8_
 
 //-------SPI
 
-void My_SPI1_Master_Init(uint16_t NSS_PIN) ; //spi master clock polarity low clock phase 1st edge
+void My_SPI1_Master_Init(uint16_t NSS_PIN,uint16_t SPI_DataSize_, uint16_t SPI_CPOL_ ,uint16_t SPI_CHPHA_ , uint16_t SPI_BaudRatePrescaler_, uint16_t SPI_FirstBit_) ; //spi master clock polarity low clock phase 1st edge
 void My_SPI1_Send_Frame(uint8_t* data , uint8_t len); //sends a series of data sequencially
 uint8_t My_SPI1_Transmit(uint8_t data ); //sends data byte and receives a byte 
 

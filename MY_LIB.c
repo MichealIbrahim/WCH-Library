@@ -74,7 +74,7 @@ void Int_Simple_disable(uint32_t addr , IRQn_Type IRQn)
  *this function sets up SPI1 as master mode0 and software cs select pin as argument
  *the cs pin you input will be used automatically on the rest of SPI/w5500 functions 
  */
-void My_SPI1_Master_Init(uint16_t NSS_PIN) {
+void My_SPI1_Master_Init(uint16_t NSS_PIN,uint16_t SPI_DataSize_, uint16_t SPI_CPOL_ ,uint16_t SPI_CHPHA_ , uint16_t SPI_BaudRatePrescaler_, uint16_t SPI_FirstBit_) {
     // Enable clocks for SPI1 and GPIOA
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1 | RCC_APB2Periph_GPIOA, ENABLE);
 	
@@ -100,13 +100,13 @@ void My_SPI1_Master_Init(uint16_t NSS_PIN) {
     SPI_InitTypeDef SPI_InitStructure;
     SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex; // Full duplex mode
     SPI_InitStructure.SPI_Mode = SPI_Mode_Master; // SPI master mode
-    SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b; // 8-bit data size
-    SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low; // Clock polarity low
-    SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge; // Clock phase 1st edge
+    SPI_InitStructure.SPI_DataSize = SPI_DataSize_; // 8-bit data size
+    SPI_InitStructure.SPI_CPOL = SPI_CPOL_; // Clock polarity low
+    SPI_InitStructure.SPI_CPHA = SPI_CHPHA_; // Clock phase 1st edge
     SPI_InitStructure.SPI_NSS = SPI_NSS_Soft; // Software control of NSS
     //SPI_InitStructure.SPI_NSS = SPI_NSS_Hard;
-    SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_4; // Baud rate prescaler
-    SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB; // MSB transmitted first
+    SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_; // Baud rate prescaler
+    SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_; // MSB transmitted first
     SPI_InitStructure.SPI_CRCPolynomial = 7; // CRC polynomial
     SPI_Init(SPI1, &SPI_InitStructure); // Initialize SPI1 with these settings
 
