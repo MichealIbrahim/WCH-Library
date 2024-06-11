@@ -175,3 +175,78 @@ uint8_t My_SPI1_Transmit(uint8_t data ) {
     return received_data; // Return the received data
 }
 
+
+//------Timer 
+/********************************************
+ * use TIMx_En() before 
+ * sets up the TIMx as a regular timer
+ *
+ *
+ */
+void My_TIMx_TimeBase_Setup(TIM_TypeDef *TIMx,uint16_t period, uint16_t prescaler, uint16_t TIM_CKD_DIV , uint16_t TIM_CounterMode)
+{
+	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+	TIM_TimeBaseStructure.TIM_Period = period;  // period
+    TIM_TimeBaseStructure.TIM_Prescaler = prescaler;  // prescaler
+    TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV;
+    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode;
+    TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
+}
+/********************************************
+ * use TIMx_En() before 
+ * sets up the TIMx as a regular timer
+ * set up proper output pins as GPIO_Mode_AF_PP
+ *
+ */
+void My_TIMx
+void My_TIMx_PWM_SetUp(TIM_TypeDef *TIMx,uint16_t period, uint16_t prescaler, uint16_t TIM_CKD_DIV, uint16_t pwm_duty , uint8_t channels 
+, FlagStatus Nchannel_En )
+{
+		    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
+
+
+    // Configure TIMx for PWM mode
+    TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+    TIM_OCInitTypeDef TIM_OCInitStructure;
+
+    // Time base configuration
+    TIM_TimeBaseStructure.TIM_Period = period;  
+    TIM_TimeBaseStructure.TIM_Prescaler = prescaler;  
+    TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV;
+    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+    TIM_TimeBaseInit(TIMx, &TIM_TimeBaseStructure);
+	
+	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
+	TIM_OCInitStructure.TIM_OutputNState = Nchannel_En;
+	TIM_OCInitStructure.TIM_Pulse = pwm_duty;  
+	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+	TIM_ARRPreloadConfig(TIMx, ENABLE);
+    // PWM1 Mode configuration: Channel1
+	if(channels | PWM_Channel_1)
+	{
+		TIM_OC1Init(TIMx, &TIM_OCInitStructure);
+		TIM_OC1PreloadConfig(TIMx, TIM_OCPreload_Enable);
+	}		
+	if(channels | PWM_Channel_2)
+	{
+		TIM_OC2Init(TIMx, &TIM_OCInitStructure);
+		TIM_OC2PreloadConfig(TIMx, TIM_OCPreload_Enable);
+	}	
+	if(channels | PWM_Channel_3)
+	{
+		TIM_OC3Init(TIMx, &TIM_OCInitStructure);
+		TIM_OC3PreloadConfig(TIMx, TIM_OCPreload_Enable);
+	}	
+	if(channels | PWM_Channel_4)
+	{
+		TIM_OC4Init(TIMx, &TIM_OCInitStructure);
+		TIM_OC4PreloadConfig(TIMx, TIM_OCPreload_Enable);
+	}	
+	
+    
+ 
+    // Enable TIM2
+    TIM_Cmd(TIM2, ENABLE);
+
+}

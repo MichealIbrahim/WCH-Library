@@ -28,7 +28,8 @@
 #define SPI_flag_RXNE 	1
 
 void SET_SYS_CLK(uint32_t SYS_CLK_);
-
+void Int_Simple_enable(uint32_t addr , IRQn_Type IRQn);
+void Int_Simple_disable(uint32_t addr , IRQn_Type IRQn);
 
 
 //-----GPIO
@@ -48,8 +49,24 @@ void My_SPI1_Master_Init(uint16_t NSS_PIN) ; //spi master clock polarity low clo
 void My_SPI1_Send_Frame(uint8_t* data , uint8_t len); //sends a series of data sequencially
 uint8_t My_SPI1_Transmit(uint8_t data ); //sends data byte and receives a byte 
 
-
-
+//------Timer 
+#define PWM_Channel_1	0b0001 
+#define PWM_Channel_2	0b0010
+#define PWM_Channel_3	0b0100
+#define PWM_Channel_4	0b1000
+void My_TIMx_TimeBase_Setup(TIM_TypeDef *TIMx,uint16_t period, uint16_t prescaler, uint16_t TIM_CKD_DIV , uint16_t TIM_CounterMode);
+void My_TIMx_PWM_SetUp(TIM_TypeDef *TIMx,uint16_t period, uint16_t prescaler , uint16_t duty , uint8_t channels , FlagStatus Nchannel En );
+#define Set_PWM1(TIMx,Duty) TIMx->CH1CVR = Duty
+#define Set_PWM2(TIMx,Duty) TIMx->CH2CVR = Duty
+#define Set_PWM3(TIMx,Duty) TIMx->CH3CVR = Duty
+#define Set_PWM4(TIMx,Duty) TIMx->CH4CVR = Duty
+#define clear_TIM_ITFlag(TIMx,TIM_IT) TIMx->INTFR = (uint16_t)~TIM_IT; // clearing interrupt flags like TIM_IT_Update
+/*
+don't forget TIM_ITConfig function to enable certain interrupts like TIM_ITConfig(TIM2,TIM_IT_Update)
+then use Int_Simple_Enable
+example TIM2_IRQHandler for function handler
+    TIM2_IRQn
+*/
 //------RCC clock BS 
 #define GPIOA_EN() 					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE)
 #define GPIOB_EN() 					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE)
