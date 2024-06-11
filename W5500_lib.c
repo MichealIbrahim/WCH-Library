@@ -2,7 +2,7 @@
 #include "MY_LIB.h"
 #include "W5500_lib.h"
 
-
+extern uint16_t SPI_NSS_PIN  ;
 /*********************************************************************
  * @fn      W5500_write
  * 
@@ -17,7 +17,7 @@ void W5500_write(uint16_t address,uint8_t block , uint8_t data) {
     output_low(GPIOA, SPI_NSS_PIN);
 	//Sending Address
 	while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET);
-    SPI1->DATAR = (address & 0xFF00) >> 8) ; 
+    SPI1->DATAR = ((address & 0xFF00) >> 8) ; 
 	
 	while (!(SPI1->STATR  |= SPI_flag_TXE));
     SPI1->DATAR = address & 0x00FF; 
@@ -45,7 +45,7 @@ uint8_t W5500_read(uint16_t address,uint8_t block ) {
     output_low(GPIOA, SPI_NSS_PIN);
 	//Sending Address
 	while (!(SPI1->STATR  |= SPI_flag_TXE));
-	SPI1->DATAR = (address & 0xFF00) >> 8) ; 
+	SPI1->DATAR = ((address & 0xFF00) >> 8) ; 
 	while (!(SPI1->STATR  |= SPI_flag_RXNE));
     received_data = SPI1->DATAR; //clearing RXNE 
 	while (!(SPI1->STATR  |= SPI_flag_TXE));
@@ -145,7 +145,7 @@ uint8_t W5500_connect(uint8_t socket, uint8_t *targetIP, uint16_t targetPort)
 	 // Step 2: Open the socket
     W5500_write(W5500_SN_CR, Socket_n_Register(socket) , W5500_CR_OPEN );
     while (W5500_read(W5500_SN_CR, Socket_n_Register(socket))); // Wait until the command is cleared
-	delay_Us(1);
+	Delay_Us(1);
 	
 	// Step 3: Check if socket is in INIT state
     if (W5500_read(W5500_SN_SR, Socket_n_Register(socket)) != W5500_SOCK_INIT) {
