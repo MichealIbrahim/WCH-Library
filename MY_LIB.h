@@ -66,6 +66,7 @@ don't forget TIM_ITConfig function to enable certain interrupts like TIM_ITConfi
 then use Int_Simple_Enable
 example TIM2_IRQHandler for function handler
     TIM2_IRQn
+    void TIM2_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
 */
 //------RCC clock BS 
 #define GPIOA_EN() 					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE)
