@@ -62,12 +62,13 @@ void My_TIMx_PWM_SetUp(TIM_TypeDef *TIMx,uint16_t period, uint16_t prescaler , u
 #define Set_PWM4(TIMx,Duty) TIMx->CH4CVR = Duty
 #define clear_TIM_ITFlag(TIMx,TIM_IT) TIMx->INTFR = (uint16_t)~TIM_IT; // clearing interrupt flags like TIM_IT_Update
 /*
-don't forget TIM_ITConfig function to enable certain interrupts like TIM_ITConfig(TIM2,TIM_IT_Update)
-then use Int_Simple_Enable
-example TIM2_IRQHandler for function handler
-    TIM2_IRQn
-    void TIM2_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
-*/
+ *	don't forget TIM_ITConfig function to enable certain interrupts like TIM_ITConfig(TIM2,TIM_IT_Update)
+ *	then use Int_Simple_Enable
+ *	example TIM2_IRQHandler for function handler
+ *  TIM2_IRQn
+ *  void TIM2_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));	
+ *
+ */
 //------RCC clock BS 
 #define GPIOA_EN() 					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE)
 #define GPIOB_EN() 					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE)

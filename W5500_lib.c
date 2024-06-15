@@ -14,20 +14,25 @@ extern uint16_t SPI_NSS_PIN  ;
  */
 
 void W5500_write(uint16_t address,uint8_t block , uint8_t data) {
-    output_low(GPIOA, SPI_NSS_PIN);
-	//Sending Address
-	while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET);
-    SPI1->DATAR = ((address & 0xFF00) >> 8) ; 
-	
-	while (!(SPI1->STATR  |= SPI_flag_TXE));
-    SPI1->DATAR = address & 0x00FF; 
-	//Sending Control byte
-	while (!(SPI1->STATR  |= SPI_flag_TXE));
-    SPI1->DATAR = 0x04  | block; // Write command
-	//Sending Data
-	while (!(SPI1->STATR  |= SPI_flag_TXE));
-    SPI1->DATAR = data ;
-    output_high(GPIOA, SPI_NSS_PIN);
+ 	uint8_t i = 0;
+	uint8_t j = 0;
+	uint8_t data_temp[4] = { (uint8_t)((address & 0xFF00) >> 8) , (uint8_t)(address & 0x00FF ) , block | 0x04, data }
+	uint8_t receive= SPI1->DATAR ; // clears the RXNE flag
+	output_low(GPIOA,SPI_NSS_PIN);
+	while(i<4 || j<4)
+	{
+		if(SPI1->STATR  & SPI_I2S_FLAG_TXE  && i < 4)
+		{
+			SPI1->DATAR = data_temp[i]; // sends data 
+			i++;
+		}		
+		if(SPI1->STATR  & SPI_I2S_FLAG_RXNE && j < 4)
+		{
+			receive= SPI1->DATAR; // only cares about last read but clears flag each time
+			j++;
+		}
+	}
+	output_high(GPIOA,SPI_NSS_PIN);
 }
 /*********************************************************************
  * @fn      W5500_read
@@ -40,35 +45,8 @@ void W5500_write(uint16_t address,uint8_t block , uint8_t data) {
  * @returns data from the specified address
  *
  */
-uint8_t W5500_read(uint16_t address,uint8_t block ) {
-	 uint8_t received_data = SPI1->DATAR; //clearing RXNE 
-    output_low(GPIOA, SPI_NSS_PIN);
-	//Sending Address
-	while (!(SPI1->STATR  |= SPI_flag_TXE));
-	SPI1->DATAR = ((address & 0xFF00) >> 8) ; 
-	while (!(SPI1->STATR  |= SPI_flag_RXNE));
-    received_data = SPI1->DATAR; //clearing RXNE 
-	while (!(SPI1->STATR  |= SPI_flag_TXE));
-	SPI1->DATAR = address & 0x00FF; 
-	while (!(SPI1->STATR  |= SPI_flag_RXNE));
-	received_data = SPI1->DATAR ; //clearing RXNE 
-	
-	//Sending Control byte
-	while (!(SPI1->STATR  |= SPI_flag_TXE));
-	SPI1->DATAR = 0x00  | block;
-	while (!(SPI1->STATR  |= SPI_flag_RXNE));
-	received_data = SPI1->DATAR ; //clearing RXNE 
-	//Sending Data
-	while (!(SPI1->STATR  |= SPI_flag_TXE)); 
-	SPI1->DATAR = 0x00 ;
-    // Get the received data
-	while (!(SPI1->STATR  |= SPI_flag_RXNE));
-    received_data = SPI1->DATAR;
-	output_high(GPIOA, SPI_NSS_PIN);
-    return received_data; // Return the received data
-    
-}
-uint8_t W5500_read2(uint16_t address,uint8_t block )
+ 
+uint8_t W5500_read(uint16_t address,uint8_t block )
 {
 	uint8_t i = 0;
 	uint8_t j = 0;
@@ -77,17 +55,18 @@ uint8_t W5500_read2(uint16_t address,uint8_t block )
 	output_low(GPIOA,SPI_NSS_PIN);
 	while(i<4 || j<4)
 	{
-		if(SPI1->STATR  |= SPI_flag_TXE  && i < 4)
+		if(SPI1->STATR  & SPI_I2S_FLAG_TXE  && i < 4)
 		{
 			SPI1->DATAR = data[i]; // sends data 
 			i++;
 		}		
-		if(SPI1->STATR  |= SPI_flag_RXNE && j < 4)
+		if(SPI1->STATR  & SPI_I2S_FLAG_RXNE && j < 4)
 		{
 			receive= SPI1->DATAR; // only cares about last read but clears flag each time
 			j++;
 		}
 	}
+	output_high(GPIOA,SPI_NSS_PIN);
 	return receive;
 }
 /*********************************************************************

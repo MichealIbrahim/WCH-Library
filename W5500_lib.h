@@ -66,7 +66,7 @@
 //w5500 module functions
 void W5500_write(uint16_t address,uint8_t block , uint8_t data);
 uint8_t W5500_read(uint16_t address,uint8_t block );
-uint8_t W5500_read2(uint16_t address,uint8_t block );
+//uint8_t W5500_read2(uint16_t address,uint8_t block );
 uint8_t W5500_Connection_check(void);
 void W5500_setup(uint8_t *ip, uint8_t *mac); //sets up SPI1 with CS pin as A4 default gateway and subnet mask
 uint8_t W5500_connect(uint8_t socket, uint8_t *targetIP, uint16_t targetPort);
